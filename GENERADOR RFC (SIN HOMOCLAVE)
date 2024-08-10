@@ -1,0 +1,64 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+string obtenerRFC(string nombre, string apellidoPaterno, string apellidoMaterno, string fechaNacimiento) {
+    string rfc = "";
+
+    rfc += apellidoPaterno[0];
+    for (int i = 1; i < apellidoPaterno.length(); i++) {
+        if (tolower(apellidoPaterno[i]) == 'a' || tolower(apellidoPaterno[i]) == 'e' ||
+            tolower(apellidoPaterno[i]) == 'i' || tolower(apellidoPaterno[i]) == 'o' ||
+            tolower(apellidoPaterno[i]) == 'u') {
+            rfc += apellidoPaterno[i];
+            break;
+        }
+    }
+
+    if (apellidoMaterno.empty()) {
+        rfc += 'X';
+    }
+    else {
+        rfc += apellidoMaterno[0];
+    }
+
+    if (nombre == "JOSE" || nombre == "MARIA") {
+        rfc += 'X';
+    }
+    else {
+        rfc += nombre[0];
+    }
+
+    if (fechaNacimiento.length() >= 6) {
+        rfc += fechaNacimiento.substr(0, 2); 
+        rfc += fechaNacimiento.substr(2, 2);  
+        rfc += fechaNacimiento.substr(4, 2); 
+    }
+    else {
+        rfc += "000000"; 
+    }
+
+    return rfc;
+}
+
+int main() {
+    string nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento;
+
+    cout << "Introduce el nombre: ";
+    getline(cin, nombre);
+    cout << "Introduce el apellido paterno: ";
+    getline(cin, apellidoPaterno);
+    cout << "Introduce el apellido materno (deja en blanco si no tiene): ";
+    getline(cin, apellidoMaterno);
+    cout << "Introduce la fecha de nacimiento (formato YYMMDD): ";
+    getline(cin, fechaNacimiento);
+
+    for (char& c : nombre) c = toupper(c);
+    for (char& c : apellidoPaterno) c = toupper(c);
+    for (char& c : apellidoMaterno) c = toupper(c);
+
+    string rfc = obtenerRFC(nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento);             
+    cout << "El RFC generado es: " << rfc << endl;
+
+    return 0;
+}
