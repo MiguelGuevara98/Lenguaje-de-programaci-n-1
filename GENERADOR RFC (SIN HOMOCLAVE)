@@ -1,64 +1,62 @@
 #include <iostream>
 #include <string>
-using namespace std;
 
-string obtenerRFC(string nombre, string apellidoPaterno, string apellidoMaterno, string fechaNacimiento) {
-    string rfc = "";
+std::string generaRFC(std::string apellidoPaterno, std::string apellidoMaterno, std::string nombre, std::string fechaNacimiento) {
+    std::string rfc;
 
     rfc += apellidoPaterno[0];
-    for (int i = 1; i < apellidoPaterno.length(); i++) {
-        if (tolower(apellidoPaterno[i]) == 'a' || tolower(apellidoPaterno[i]) == 'e' ||
-            tolower(apellidoPaterno[i]) == 'i' || tolower(apellidoPaterno[i]) == 'o' ||
-            tolower(apellidoPaterno[i]) == 'u') {
-            rfc += apellidoPaterno[i];
+    for (char c : apellidoPaterno) {
+        if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U') {
+            rfc += c;
             break;
         }
     }
 
-    if (apellidoMaterno.empty()) {
-        rfc += 'X';
+    rfc += apellidoMaterno.empty() ? 'X' : apellidoMaterno[0];
+    rfc += nombre[0];
+
+    if (fechaNacimiento.length() == 10 && fechaNacimiento[4] == '-' && fechaNacimiento[7] == '-') {
+        rfc += fechaNacimiento.substr(2, 2);
+        rfc += fechaNacimiento.substr(5, 2);
+        rfc += fechaNacimiento.substr(8, 2);
     }
     else {
-        rfc += apellidoMaterno[0];
+        std::cout << "Error: Formato de fecha incorrecto. Utiliza YYYY-MM-DD." << std::endl;
+        return "";
     }
 
-    if (nombre == "JOSE" || nombre == "MARIA") {
-        rfc += 'X';
-    }
-    else {
-        rfc += nombre[0];
-    }
-
-    if (fechaNacimiento.length() >= 6) {
-        rfc += fechaNacimiento.substr(0, 2); 
-        rfc += fechaNacimiento.substr(2, 2);  
-        rfc += fechaNacimiento.substr(4, 2); 
-    }
-    else {
-        rfc += "000000"; 
+    std::string antisonantes[] = { "BUEI", "CACA", "MAME", "PENE", "PUTO", "GUEY", "JOTO", "COJE", "FETO", "KULO" };
+    for (const auto& palabra : antisonantes) {
+        if (rfc.find(palabra) != std::string::npos) {
+            rfc[1] = 'X';
+            break;
+        }
     }
 
     return rfc;
 }
 
 int main() {
-    string nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento;
+    std::string apellidoPaterno, apellidoMaterno, nombre, fechaNacimiento;
 
-    cout << "Introduce el nombre: ";
-    getline(cin, nombre);
-    cout << "Introduce el apellido paterno: ";
-    getline(cin, apellidoPaterno);
-    cout << "Introduce el apellido materno (deja en blanco si no tiene): ";
-    getline(cin, apellidoMaterno);
-    cout << "Introduce la fecha de nacimiento (formato YYMMDD): ";
-    getline(cin, fechaNacimiento);
+    std::cout << "Apellido Paterno: ";
+    std::cin >> apellidoPaterno;
+    std::cout << "Apellido Materno: ";
+    std::cin >> apellidoMaterno;
+    std::cin.ignore();
 
-    for (char& c : nombre) c = toupper(c);
-    for (char& c : apellidoPaterno) c = toupper(c);
-    for (char& c : apellidoMaterno) c = toupper(c);
+    std::cout << "Nombre: ";
+    std::getline(std::cin, nombre);
 
-    string rfc = obtenerRFC(nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento);             
-    cout << "El RFC generado es: " << rfc << endl;
+    std::cout << "Fecha de Nacimiento (YYYY-MM-DD): ";
+    std::cin >> fechaNacimiento;
+
+    std::string rfc = generaRFC(apellidoPaterno, apellidoMaterno, nombre, fechaNacimiento);
+
+    if (!rfc.empty()) {
+        std::cout << "RFC generado: " << rfc << std::endl;
+    }
 
     return 0;
 }
+
